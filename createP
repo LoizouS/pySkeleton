@@ -1,0 +1,49 @@
+#!/bin/bash
+
+echo "INTIALIZING DIRECTORY"
+PROJECTNAME=$1
+mkdir $PROJECTNAME
+cd $PROJECTNAME
+TFILE=_tests.py
+mkdir bin $PROJECTNAME tests docs
+touch $PROJECTNAME/__init__.py
+touch tests/__init__.py
+
+echo "try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+config = {
+    'description': '$PROJECTNAME',
+    'author': 'My Name',
+    'url': 'URL to get it at.',
+    'download_url': 'Where to download it.',
+    'author_email': 'My email.',
+    'version': '0.1',
+    'install_requires': ['nose'],
+    'packages': ['$PROJECTNAME'],
+    'scripts': [],
+    'name': '$PROJECTNAME'
+}
+
+setup(**config)" >> setup.py
+
+echo "from nose.tools import *
+import $PROJECTNAME
+
+def setup():
+    print 'SETUP!'
+
+def teardown():
+    print 'TEAR DOWN!'
+
+def test_basic():
+    print 'I RAN!'" >> tests/$PROJECTNAME$TFILE
+
+echo "\n"
+echo "INTIALIZATION DONE!"
+
+echo "RUNNING TESTS"
+nosetests
+echo "DONE"
